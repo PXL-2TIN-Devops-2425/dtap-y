@@ -1,16 +1,59 @@
 pipeline {
     agent any
-  
     stages {
         stage ('cleanup'){
             steps{
-                // TODO
+                cleanws()
             }
         }
         stage('fetch app code') {
             steps {
-                // Get some code from a GitHub repository
-                git branch: 'main', url: 'https://github.com/PXL-2TIN-DevOps-Resources/calculator-app-finished.git'
+                sh '''
+                    [ -d ~/.ssh ] || mkdir -m 0700 ~/.ssh
+                        # mkdir met een check of de folder al bestaat namelijk de [ -d ~/.ssh ], de -m optie van mkdir werkt hetzelfde als chmod
+                    [ -e ~/.ssh/known_hosts ] || touch ~/.ssh/known_hosts
+                        # failsafe voor als de known_host file niet bestaat -e staat voor exsists, -f voor of het een file is
+                    ssh-keygen -F github.com > NULL || ssh-keyscan -t rsa,ECDSA,Ed25519 github.com >> ~/.ssh/known_hosts
+                        # truckje om te voorkomen dat er dubbele keys in komen te staan.
+                    '''
+                git branch: 'main',
+                    credentialsId: 'GitHub.com', 
+                    url: 'git@github.com:PXL-2TIN-Devops-2425/calculator-app-finished-y.git'
+            }
+        }
+        stage('Install dependencies') {
+            steps {
+                nodejs(nodeJSInstallationName: 'TINnode-devops') {
+                    sh '''
+                        npm config ls
+                        npm install
+                        npm audit fix
+                        npm fund
+                        npx browserslist@latest
+                    '''
+                }
+                // https://plugins.jenkins.io/nodejs/
+            }
+        }
+        stage('Build artifact') {
+            steps {
+                // In deze stage bouw je een docker container van de nodeJS applicatie. (Tip: Zorg eerst voor een werkende Dockerfile en test deze lokaal). De container wordt vanuit de pipeline gebuild.
+                echo "blub"
+            }
+        }
+        stage('Push artifact') {
+            steps {
+                //  In deze stage push je de gebouwde container naar dockerhub. Je maakt hier gebruik van een publieke image op het profiel van één van je teamgenoten.
+                echo "blub"
+            }
+        }
+        stage('deployment') {
+            steps {
+                /* In deze stage zorg je ervoor dat de docker container opgestart wordt op poort 3000 en blijft draaien na het uitvoeren van de pipeline.
+                    * _Tip 1: Gebruik de container vanuit dockerhub!_
+                    * _Tip 2: Denk eraan dat er misschien nog een vorige versie van de applicatie actief is._
+                */
+                echo "blub"
             }
         }
     }

@@ -1,8 +1,21 @@
 pipeline {
     agent any
     stages {
-        stage('dtap production') {
+        stage('deploy prod') {
             steps {
+                // Zorg ervoor dat je in deze stage op je remote server de laatste versie van je docker container download a.d.h.v. dockerhub.
+                echo "good luck..."
+            }
+        }
+        stage('start prod') {
+            steps {
+                // Zorg ervoor dat de container wordt opgestart op je remote server. Na het opstarten moet je de applicatie kunnen gebruiken op poort 80.
+                echo "good luck..."
+            }
+        }
+        stage('test prod') {
+            steps {
+                // Doe een check om te kijken of de applicatie werkt. Voorlopig kan je dit testen met het `curl` commando om te controleren of je een statuscode 200 krijgt als je het IP adres van de `productieserver` bezoekt.
                 echo "good luck..."
             }
         }
