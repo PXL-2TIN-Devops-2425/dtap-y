@@ -1,6 +1,7 @@
 pipeline {
     agent any
     stages {
+        // https://plugins.jenkins.io/pipeline-aws/
         stage('deploy prod') {
             steps {
                 // Zorg ervoor dat je in deze stage op je remote server de laatste versie van je docker container download a.d.h.v. dockerhub.

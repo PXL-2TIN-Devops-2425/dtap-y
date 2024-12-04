@@ -38,7 +38,10 @@ pipeline {
         stage('Build artifact') {
             steps {
                 // In deze stage bouw je een docker container van de nodeJS applicatie. (Tip: Zorg eerst voor een werkende Dockerfile en test deze lokaal). De container wordt vanuit de pipeline gebuild.
-                echo "blub"
+                writeFile encoding: 'utf-8', file: 'Dockerfile', text: 
+'''testing
+1234
+'''
             }
         }
         stage('Push artifact') {
