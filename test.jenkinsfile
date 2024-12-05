@@ -41,22 +41,13 @@ pipeline {
         }
         stage('Build artifact') {
             steps {
-                // In deze stage bouw je een docker container van de nodeJS applicatie. (Tip: Zorg eerst voor een werkende Dockerfile en test deze lokaal). De container wordt vanuit de pipeline gebuild.
-                writeFile encoding: 'utf-8', file: '.dockerignore', text: 
-'''
-docker-compose.yml
-Dockerfile
-.dockerignore
-.git
-.gitignore
-NULL
-package-lock.json
-tests
-'''
                 writeFile encoding: 'utf-8', file: 'Dockerfile', text: 
-'''FROM node:23-bullseye-slim
+'''#Dockerfile
+FROM node:23-bullseye-slim
 
-#ADD https://github.com/PXL-2TIN-Devops-2425/calculator-app-finished-y.git .
+WORKDIR /usr/src/app
+
+ADD https://github.com/PXL-2TIN-Devops-2425/calculator-app-finished-y.git /usr/src/app/
 
 RUN rm -rf /usr/src/app/tests /usr/src/app/Dockerfile /usr/src/app/.dockerignore /usr/src/app/.gitignore /usr/src/app/docker-compose.yml && npm install npm@latest -g && npm install && npm audit fix && npm fund
 
