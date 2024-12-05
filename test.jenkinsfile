@@ -78,8 +78,7 @@ CMD ["npm","start"]
                 withCredentials([usernamePassword(credentialsId: 'Dockerhub', usernameVariable : 'usernameVariable', passwordVariable : 'passwordVariable')]) {
                     sh '''
                     echo $passwordVariable | docker login -u $usernameVariable --password-stdin
-                    docker push akikasumiizumiborstpxl/calculator:latest 
-                    docker push akikasumiizumiborstpxl/calculator:$BUILD_NUMBER
+                    docker push --all-tags akikasumiizumiborstpxl/calculator
                     '''
                 }
             }
