@@ -68,7 +68,7 @@ EXPOSE 3000
 
 CMD ["npm","start"]
 '''
-                sh 'docker build -t akikasumiizumiborstpxl/calculator .'
+                sh 'docker build -t akikasumiizumiborstpxl/calculator:$BUILD_NUMBER .'
             }
         
         }
@@ -76,6 +76,12 @@ CMD ["npm","start"]
             steps {
                 //  In deze stage push je de gebouwde container naar dockerhub. Je maakt hier gebruik van een publieke image op het profiel van één van je teamgenoten.
                 echo 'docker push akikasumiizumiborstpxl/calculator '
+                withCredentials(credentialsId: 'Dockerhub'){
+                    sh'''
+                    docker login
+                    docker push akikasumiizumiborstpxl/calculator:$BUILD_NUMBER
+                    '''
+                }
             }
         }
         stage('deployment') {
