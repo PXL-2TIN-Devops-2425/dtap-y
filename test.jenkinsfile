@@ -5,7 +5,8 @@ pipeline {
             steps{
                 sh '''
                 (docker stop `docker ps -q`) | echo "no running"
-                docker image prune -a -f
+                docker container prune -f
+                docker image prune -af
                 '''
             }
         }
