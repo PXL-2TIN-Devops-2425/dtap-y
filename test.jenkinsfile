@@ -75,7 +75,7 @@ CMD ["npm","start"]
         stage('Push artifact') {
             steps {
                 //  In deze stage push je de gebouwde container naar dockerhub. Je maakt hier gebruik van een publieke image op het profiel van één van je teamgenoten.
-                withCredentials([usernamePassword(credentialsId: 'Dockerhub', usernameVariable : 'usernameVariable', passwordVariable : 'passwordVariable')]) {
+                withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable : 'usernameVariable', passwordVariable : 'passwordVariable')]) {
                     sh '''
                     echo $passwordVariable | docker login -u $usernameVariable --password-stdin
                     docker push --all-tags akikasumiizumiborstpxl/calculator
