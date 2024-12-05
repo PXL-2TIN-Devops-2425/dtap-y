@@ -4,8 +4,8 @@ pipeline {
         stage ('cleanup'){
             steps{
                 sh '''
-                docker stop `docker ps -q` | echo "no running"
-                docker image prune -a
+                (docker stop `docker ps -q`) | echo "no running"
+                )docker image prune -a
 
                 '''
                 cleanWs()
