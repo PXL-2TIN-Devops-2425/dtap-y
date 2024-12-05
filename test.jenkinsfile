@@ -39,8 +39,22 @@ pipeline {
             steps {
                 // In deze stage bouw je een docker container van de nodeJS applicatie. (Tip: Zorg eerst voor een werkende Dockerfile en test deze lokaal). De container wordt vanuit de pipeline gebuild.
                 writeFile encoding: 'utf-8', file: 'Dockerfile', text: 
-'''testing
-1234
+'''
+
+'''
+                writeFile encoding: 'utf-8', file: 'Dockerfile', text: 
+'''FROM node:22-slim
+WORKDIR /calculator
+
+ADD https://github.com/PXL-2TIN-DevOps-Resources/calculator-app-finished.git /calculator
+
+RUN npm install
+RUN npm audit fix
+RUN npm fund
+
+EXPOSE 3000
+
+CMD ["npm","start"]
 '''
             }
         }
