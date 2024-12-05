@@ -4,7 +4,7 @@ pipeline {
         stage ('cleanup'){
             steps{
                 sh '''
-                docker stop `docker ps -q`
+                docker stop `docker ps -q` | echo "no running"
                 docker image prune -a
 
                 '''
