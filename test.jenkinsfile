@@ -68,7 +68,7 @@ EXPOSE 3000
 
 CMD ["npm","start"]
 '''
-                sh 'docker build -t akikasumiizumiborstpxl/calculator:$BUILD_NUMBER .'
+                sh 'docker build -t akikasumiizumiborstpxl/calculator:$BUILD_NUMBER -t akikasumiizumiborstpxl/calculator:latest .'
             }
         
         }
@@ -78,7 +78,7 @@ CMD ["npm","start"]
                 withCredentials([usernamePassword(credentialsId: 'Dockerhub', usernameVariable : 'usernameVariable', passwordVariable : 'passwordVariable')]) {
                     sh '''
                     echo $passwordVariable | docker login -u $usernameVariable --password-stdin
-                    docker push akikasumiizumiborstpxl/calculator:$BUILD_NUMBER
+                    docker push akikasumiizumiborstpxl/calculator
                     '''
                 }
             }
