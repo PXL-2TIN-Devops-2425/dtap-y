@@ -87,7 +87,7 @@ CMD ["npm","start"]
                 */
                 sh '''
                 (docker stop `docker ps -q`) | echo "no running"
-                docker run --hostname=06bd8e9a1cc0 --mac-address=02:42:ac:11:00:02 --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=NODE_VERSION=23.3.0 --env=YARN_VERSION=1.22.22 --network=bridge --workdir=/app -p 3000:3000 --restart=no --runtime=runc -d akikasumiizumiborstpxl/calculator:latest
+                docker run  -p 3000:3000 -d akikasumiizumiborstpxl/calculator:latest
                 '''
             }
         }
