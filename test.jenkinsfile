@@ -58,12 +58,13 @@ tests
 
 ADD https://github.com/PXL-2TIN-Devops-2425/calculator-app-finished-y.git .
 
-RUN npm install npm@latest -g && npm install && npm audit fix && npm fund
+RUN npm install npm@latest -g && npm install && npm audit fix && npm fund && npx browserslist@latest
 
 EXPOSE 3000
 
 CMD ["npm","start"]
 '''
+                // https://www.geeksforgeeks.org/how-to-update-npm/
                 sh 'docker build -t akikasumiizumiborstpxl/calculator:$BUILD_NUMBER -t akikasumiizumiborstpxl/calculator:latest .'
             }
         
