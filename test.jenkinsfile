@@ -38,19 +38,22 @@ pipeline {
         stage('Build artifact') {
             steps {
                 // In deze stage bouw je een docker container van de nodeJS applicatie. (Tip: Zorg eerst voor een werkende Dockerfile en test deze lokaal). De container wordt vanuit de pipeline gebuild.
-                writeFile encoding: 'utf-8', file: 'Dockerfile', text: 
+                writeFile encoding: 'utf-8', file: '.dockerignore', text: 
 '''
-
+docker-compose.yml
+Dockerfile
+.dockerignore
+.git
+.gitignore
+NULL
+package-lock.json
+tests
 '''
                 writeFile encoding: 'utf-8', file: 'Dockerfile', text: 
-'''FROM node:22-slim
+'''FROM node:23-slim
 WORKDIR /calculator
 
-ADD https://github.com/PXL-2TIN-DevOps-Resources/calculator-app-finished.git /calculator
-
-RUN npm install
-RUN npm audit fix
-RUN npm fund
+COPY . /calculator/
 
 EXPOSE 3000
 
