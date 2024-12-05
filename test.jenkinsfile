@@ -78,7 +78,7 @@ CMD ["npm","start"]
         stage('Push artifact') {
             steps {
                 //  In deze stage push je de gebouwde container naar dockerhub. Je maakt hier gebruik van een publieke image op het profiel van één van je teamgenoten.
-                echo "blub"
+                echo 'docker push akikasumiizumiborstpxl/calculator '
             }
         }
         stage('deployment') {
@@ -87,7 +87,7 @@ CMD ["npm","start"]
                     * _Tip 1: Gebruik de container vanuit dockerhub!_
                     * _Tip 2: Denk eraan dat er misschien nog een vorige versie van de applicatie actief is._
                 */
-                echo "blub"
+                sh 'docker run --hostname=06bd8e9a1cc0 --mac-address=02:42:ac:11:00:02 --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=NODE_VERSION=23.3.0 --env=YARN_VERSION=1.22.22 --network=bridge --workdir=/app -p 3000:3000 --restart=no --runtime=runc -d akikasumiizumiborstpxl/calculator:latest'
             }
         }
     }
