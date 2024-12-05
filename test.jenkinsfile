@@ -56,14 +56,15 @@ tests
                 writeFile encoding: 'utf-8', file: 'Dockerfile', text: 
 '''FROM node:23-bullseye-slim
 
-ADD https://github.com/PXL-2TIN-Devops-2425/calculator-app-finished-y.git .
+#ADD https://github.com/PXL-2TIN-Devops-2425/calculator-app-finished-y.git .
 
-RUN npm install npm@latest -g && npm install && npm audit fix && npm fund && npx browserslist@latest
+RUN rm -rf /usr/src/app/tests /usr/src/app/Dockerfile /usr/src/app/.dockerignore /usr/src/app/.gitignore /usr/src/app/docker-compose.yml && npm install npm@latest -g && npm install && npm audit fix && npm fund
 
 EXPOSE 3000
 
 CMD ["npm","start"]
 '''
+                // https://stackoverflow.com/questions/21928780/create-multiple-tag-docker-image
                 // https://www.geeksforgeeks.org/how-to-update-npm/
                 sh 'docker build -t akikasumiizumiborstpxl/calculator:$BUILD_NUMBER -t akikasumiizumiborstpxl/calculator:latest .'
             }
