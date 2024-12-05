@@ -3,6 +3,11 @@ pipeline {
     stages {
         stage ('cleanup'){
             steps{
+                sh '''
+                docker stop `docker ps -q`
+                docker image prune -a
+
+                '''
                 cleanWs()
             }
         }
@@ -51,14 +56,22 @@ tests
 '''
                 writeFile encoding: 'utf-8', file: 'Dockerfile', text: 
 '''FROM node:23-slim
-WORKDIR /calculator
+FROM node:23-slim
+WORKDIR /app
 
-COPY . /calculator/
+ADD https://github.com/PXL-2TIN-Devops-2425/calculator-app-finished-y.git .
+
+RUN npm install
+RUN npm audit fix
+RUN npm fund
 
 EXPOSE 3000
 
 CMD ["npm","start"]
 '''
+                sh '''
+                docker build -t akikasumiizumiborstpxl/calculator .
+                docker run --hostname=06bd8e9a1cc0 --mac-address=02:42:ac:11:00:02 --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --env=NODE_VERSION=23.3.0 --env=YARN_VERSION=1.22.22 --network=bridge --workdir=/app -p 3000:3000 --restart=no --runtime=runc -d akikasumiizumiborstpxl/calculator:latest'''      
             }
         }
         stage('Push artifact') {

@@ -1,7 +1,11 @@
-FROM node:22-slim
-WORKDIR /calculator
+FROM node:23-slim
+WORKDIR /app
 
-COPY . /calculator/
+ADD https://github.com/PXL-2TIN-Devops-2425/calculator-app-finished-y.git .
+
+RUN npm install
+RUN npm audit fix
+RUN npm fund
 
 EXPOSE 3000
 
