@@ -1,0 +1,8 @@
+docker-compose.yml
+Dockerfile
+.dockerignore
+.git
+.gitignore
+NULL
+package-lock.json
+tests

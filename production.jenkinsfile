@@ -1,9 +1,54 @@
 pipeline {
     agent any
+    environment {
+        AWS_IP = '54.92.201.172'
+    }
     stages {
-        stage('dtap production') {
+        stage('cleanup'){
+            steps{
+                sh '''
+                    [ -d ~/.ssh ] || mkdir -m 0700 ~/.ssh
+                        # mkdir met een check of de folder al bestaat namelijk de [ -d ~/.ssh ], de -m optie van mkdir werkt hetzelfde als chmod
+                    [ -e ~/.ssh/known_hosts ] || touch ~/.ssh/known_hosts
+                        # failsafe voor als de known_host file niet bestaat -e staat voor exsists, -f voor of het een file is
+                    ssh-keygen -F $AWS_IP > NULL || ssh-keyscan -t rsa,ECDSA,Ed25519 $AWS_IP >> ~/.ssh/known_hosts
+                        # truckje om te voorkomen dat er dubbele keys in komen te staan.
+                '''
+                withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
+                    sh '''
+                    ssh -i $PEM ubuntu@$AWS_IP 'docker stop calculator | echo "no running"'
+                    ssh -i $PEM ubuntu@$AWS_IP 'docker container prune -f'
+                    ssh -i $PEM ubuntu@$AWS_IP 'docker image prune -af'
+                    '''
+                }
+            }
+        }
+        // https://plugins.jenkins.io/pipeline-aws/
+        stage('deploy prod') {
             steps {
-                echo "good luck..."
+                withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
+                    sh '''
+                    ssh -i $PEM ubuntu@$AWS_IP 'docker pull akikasumiizumiborstpxl/calculator:latest'
+                    '''
+                }
+                // Zorg ervoor dat je in deze stage op je remote server de laatste versie van je docker container download a.d.h.v. dockerhub.
+            }
+        }
+        stage('start prod') {
+            steps {
+                // Zorg ervoor dat de container wordt opgestart op je remote server. Na het opstarten moet je de applicatie kunnen gebruiken op poort 80.
+                
+                withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
+                    sh '''
+                    ssh -i $PEM ubuntu@$AWS_IP 'docker run -p 80:3000 --name calculator -d akikasumiizumiborstpxl/calculator:latest'
+                    '''
+                }
+            }
+        }
+        stage('test prod') {
+            steps {
+                // Doe een check om te kijken of de applicatie werkt. Voorlopig kan je dit testen met het `curl` commando om te controleren of je een statuscode 200 krijgt als je het IP adres van de `productieserver` bezoekt.
+                sh 'curl --basic -I $AWS_IP'
             }
         }
     }
