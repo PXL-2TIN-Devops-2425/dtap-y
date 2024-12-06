@@ -9,7 +9,7 @@ pipeline {
                         # mkdir met een check of de folder al bestaat namelijk de [ -d ~/.ssh ], de -m optie van mkdir werkt hetzelfde als chmod
                     [ -e ~/.ssh/known_hosts ] || touch ~/.ssh/known_hosts
                         # failsafe voor als de known_host file niet bestaat -e staat voor exsists, -f voor of het een file is
-                    ssh-keygen -F ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com > NULL || ssh-keyscan -t rsa,ECDSA,Ed25519 ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+                    ssh-keygen -F ec2-54-92-201-172.compute-1.amazonaws.com > NULL || ssh-keyscan -t rsa,ECDSA,Ed25519 ec2-54-92-201-172.compute-1.amazonaws.com >> ~/.ssh/known_hosts
                         # truckje om te voorkomen dat er dubbele keys in komen te staan.
                 '''
                 withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
