@@ -14,8 +14,8 @@ pipeline {
                 '''
                 withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
                     sh '''
-                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com "docker stop `docker ps -q`"
-                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com docker container prune -f
+                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker stop < docker ps -q'
+                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker container prune -f'
                     ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker image prune -af'
                     '''
                 }
