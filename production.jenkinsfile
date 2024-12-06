@@ -16,7 +16,7 @@ pipeline {
                 '''
                 withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
                     sh '''
-                    ssh -i $PEM ubuntu@$AWS_link 'docker stop calculator | echo "no running"'
+                    ssh -i $PEM ubuntu@54.92.201.172 'docker stop calculator | echo "no running"'
                     ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker container prune -f'
                     ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker image prune -af'
                     '''
