@@ -11,9 +11,9 @@ pipeline {
                         # failsafe voor als de known_host file niet bestaat -e staat voor exsists, -f voor of het een file is
                     ssh-keygen -F ec2-107-21-89-82.compute-1.amazonaws.com > NULL || ssh-keyscan -t rsa,ECDSA,Ed25519 ec2-107-21-89-82.compute-1.amazonaws.com >> ~/.ssh/known_hosts
                         # truckje om te voorkomen dat er dubbele keys in komen te staan.
-                    ssh ubuntu@ec2-107-21-89-82.compute-1.amazonaws.com "docker stop `docker ps -q`"
-                    ssh ubuntu@ec2-107-21-89-82.compute-1.amazonaws.com "docker container prune -f"
-                    ssh ubuntu@ec2-107-21-89-82.compute-1.amazonaws.com "docker image prune -af"
+                    ssh ubuntu@ec2-107-21-89-82.compute-1.amazonaws.com docker stop `docker ps -q`
+                    ssh ubuntu@ec2-107-21-89-82.compute-1.amazonaws.com docker container prune -f
+                    ssh ubuntu@ec2-107-21-89-82.compute-1.amazonaws.com docker image prune -af
                     '''
                 }
             }
