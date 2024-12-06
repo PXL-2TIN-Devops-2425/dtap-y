@@ -67,7 +67,7 @@ CMD ["npm","start"]
                 //  In deze stage push je de gebouwde container naar dockerhub. Je maakt hier gebruik van een publieke image op het profiel van één van je teamgenoten.
                 withCredentials([usernamePassword(credentialsId: 'DockerHub', usernameVariable : 'usernameVariable', passwordVariable : 'passwordVariable')]) {
                     sh '''
-                    echo $passwordVariable | docker login -u $usernameVariable --password-stdin
+                    echo $passwordVariable | docker login -u $usernameVariable -p $passwordVariable
                     docker push --all-tags akikasumiizumiborstpxl/calculator
                     '''
                 }
