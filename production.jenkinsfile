@@ -48,7 +48,7 @@ pipeline {
         stage('test prod') {
             steps {
                 // Doe een check om te kijken of de applicatie werkt. Voorlopig kan je dit testen met het `curl` commando om te controleren of je een statuscode 200 krijgt als je het IP adres van de `productieserver` bezoekt.
-                sh 'curl -I 54.92.201.172:80'
+                sh 'curl --basic -I $AWS_IP'
             }
         }
     }
