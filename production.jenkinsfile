@@ -3,19 +3,17 @@ pipeline {
     stages {
         stage('cleanup'){
             steps{
-                sh '''
-                 [ -d ~/.ssh ] || mkdir -m 0700 ~/.ssh
+                sshagent(credentials: ['AWS']) {
+                    sh '''
+                     [ -d ~/.ssh ] || mkdir -m 0700 ~/.ssh
                         # mkdir met een check of de folder al bestaat namelijk de [ -d ~/.ssh ], de -m optie van mkdir werkt hetzelfde als chmod
                     [ -e ~/.ssh/known_hosts ] || touch ~/.ssh/known_hosts
                         # failsafe voor als de known_host file niet bestaat -e staat voor exsists, -f voor of het een file is
-                    ssh-keygen -F ec2-107-21-89-82.compute-1.amazonaws.com > NULL || ssh-keyscan -t rsa,ECDSA,Ed25519 ec2-107-21-89-82.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+                    ssh-keygen -F ec2-3-85-124-218.compute-1.amazonaws.com > NULL || ssh-keyscan -t rsa,ECDSA,Ed25519 ec2-107-21-89-82.compute-1.amazonaws.com >> ~/.ssh/known_hosts
                         # truckje om te voorkomen dat er dubbele keys in komen te staan.
-                '''
-                sshagent(credentials: ['AWS']) {
-                    sh '''
-                    ssh -k ec2-107-21-89-82.compute-1.amazonaws.com 'docker stop `docker ps -q`'
-                    ssh -k ec2-107-21-89-82.compute-1.amazonaws.com 'docker container prune -f'
-                    ssh -k ec2-107-21-89-82.compute-1.amazonaws.com 'docker image prune -af'
+                    ssh ec2-3-85-124-218.compute-1.amazonaws.com 'docker stop `docker ps -q`'
+                    ssh ec2-3-85-124-218.compute-1.amazonaws.com 'docker container prune -f'
+                    ssh ec2-3-85-124-218.compute-1.amazonaws.com 'docker image prune -af'
                     '''
                 }
             }
@@ -25,7 +23,7 @@ pipeline {
             steps {
                 sshagent(credentials: ['AWS']) {
                     sh '''
-                    ssh ec2-107-21-89-82.compute-1.amazonaws.com 'docker pull akikasumiizumiborstpxl/calculator:latest'
+                    ssh ec2-3-85-124-218.compute-1.amazonaws.com 'docker pull akikasumiizumiborstpxl/calculator:latest'
                     '''
                 }
                 // Zorg ervoor dat je in deze stage op je remote server de laatste versie van je docker container download a.d.h.v. dockerhub.
@@ -37,7 +35,7 @@ pipeline {
                 
                 sshagent(credentials: ['AWS']) {
                     sh '''
-                    ssh ec2-107-21-89-82.compute-1.amazonaws.com 'docker run -p 80:3000 -d akikasumiizumiborstpxl/calculator:latest'
+                    ssh ec2-3-85-124-218.compute-1.amazonaws.com 'docker run -p 80:3000 -d akikasumiizumiborstpxl/calculator:latest'
                     '''
                 }
             }
