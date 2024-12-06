@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        AWS_link = 'ec2-54-92-201-172.compute-1.amazonaws.com'
+        AWS_IP = '54.92.201.172'
     }
     stages {
         stage('cleanup'){
@@ -11,14 +11,14 @@ pipeline {
                         # mkdir met een check of de folder al bestaat namelijk de [ -d ~/.ssh ], de -m optie van mkdir werkt hetzelfde als chmod
                     [ -e ~/.ssh/known_hosts ] || touch ~/.ssh/known_hosts
                         # failsafe voor als de known_host file niet bestaat -e staat voor exsists, -f voor of het een file is
-                    ssh-keygen -F ec2-54-92-201-172.compute-1.amazonaws.com > NULL || ssh-keyscan -t rsa,ECDSA,Ed25519 ec2-54-92-201-172.compute-1.amazonaws.com >> ~/.ssh/known_hosts
+                    ssh-keygen -F $AWS_IP > NULL || ssh-keyscan -t rsa,ECDSA,Ed25519 $AWS_IP >> ~/.ssh/known_hosts
                         # truckje om te voorkomen dat er dubbele keys in komen te staan.
                 '''
                 withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
                     sh '''
-                    ssh -i $PEM ubuntu@54.92.201.172 'docker stop calculator | echo "no running"'
-                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker container prune -f'
-                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker image prune -af'
+                    ssh -i $PEM ubuntu@$AWS_IP 'docker stop calculator | echo "no running"'
+                    ssh -i $PEM ubuntu@$AWS_IP 'docker container prune -f'
+                    ssh -i $PEM ubuntu@$AWS_IP 'docker image prune -af'
                     '''
                 }
             }
@@ -28,7 +28,7 @@ pipeline {
             steps {
                 withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
                     sh '''
-                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker pull akikasumiizumiborstpxl/calculator:latest'
+                    ssh -i $PEM ubuntu@$AWS_IP 'docker pull akikasumiizumiborstpxl/calculator:latest'
                     '''
                 }
                 // Zorg ervoor dat je in deze stage op je remote server de laatste versie van je docker container download a.d.h.v. dockerhub.
@@ -40,7 +40,7 @@ pipeline {
                 
                 withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
                     sh '''
-                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker run -p 80:3000 --name calculator -d akikasumiizumiborstpxl/calculator:latest'
+                    ssh -i $PEM ubuntu@$AWS_IP 'docker run -p 80:3000 --name calculator -d akikasumiizumiborstpxl/calculator:latest'
                     '''
                 }
             }
@@ -48,7 +48,7 @@ pipeline {
         stage('test prod') {
             steps {
                 // Doe een check om te kijken of de applicatie werkt. Voorlopig kan je dit testen met het `curl` commando om te controleren of je een statuscode 200 krijgt als je het IP adres van de `productieserver` bezoekt.
-                sh 'curl -I 54.92.201.172'
+                sh 'curl -I $AWS_IP'
             }
         }
     }
