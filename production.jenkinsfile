@@ -14,7 +14,7 @@ pipeline {
                 '''
                 withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
                     sh '''
-                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker stop < docker ps -q'
+                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker stop calculator'
                     ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker container prune -f'
                     ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker image prune -af'
                     '''
@@ -38,7 +38,7 @@ pipeline {
                 
                 withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
                     sh '''
-                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker run -p 80:3000 -d akikasumiizumiborstpxl/calculator:latest'
+                    ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker run -p 80:3000 --name calculator -d akikasumiizumiborstpxl/calculator:latest'
                     '''
                 }
             }
