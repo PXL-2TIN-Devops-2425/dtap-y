@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('cleanup'){
             steps{
-                withCredentials(file(variable : 'PEM', credentialsId : 'AWS')]) {
+                withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
                     sh '''
                      [ -d ~/.ssh ] || mkdir -m 0700 ~/.ssh
                         # mkdir met een check of de folder al bestaat namelijk de [ -d ~/.ssh ], de -m optie van mkdir werkt hetzelfde als chmod
@@ -22,7 +22,7 @@ pipeline {
         // https://plugins.jenkins.io/pipeline-aws/
         stage('deploy prod') {
             steps {
-                withCredentials(file(variable : 'PEM', credentialsId : 'AWS')]) {
+                withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
                     sh '''
                     ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker pull akikasumiizumiborstpxl/calculator:latest'
                     '''
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 // Zorg ervoor dat de container wordt opgestart op je remote server. Na het opstarten moet je de applicatie kunnen gebruiken op poort 80.
                 
-                withCredentials(file(variable : 'PEM', credentialsId : 'AWS')]) {
+                withCredentials([file(variable : 'PEM', credentialsId : 'AWS')]) {
                     sh '''
                     ssh -i $PEM ubuntu@ec2-54-92-201-172.compute-1.amazonaws.com 'docker run -p 80:3000 -d akikasumiizumiborstpxl/calculator:latest'
                     '''
