@@ -3,14 +3,16 @@ pipeline {
     stages {
         stage('cleanup'){
             steps{
-                sshagent(credentials: ['AWS']) {
-                    sh '''
-                     [ -d ~/.ssh ] || mkdir -m 0700 ~/.ssh
+                sh '''
+                 [ -d ~/.ssh ] || mkdir -m 0700 ~/.ssh
                         # mkdir met een check of de folder al bestaat namelijk de [ -d ~/.ssh ], de -m optie van mkdir werkt hetzelfde als chmod
                     [ -e ~/.ssh/known_hosts ] || touch ~/.ssh/known_hosts
                         # failsafe voor als de known_host file niet bestaat -e staat voor exsists, -f voor of het een file is
                     ssh-keygen -F ec2-107-21-89-82.compute-1.amazonaws.com > NULL || ssh-keyscan -t rsa,ECDSA,Ed25519 ec2-107-21-89-82.compute-1.amazonaws.com >> ~/.ssh/known_hosts
                         # truckje om te voorkomen dat er dubbele keys in komen te staan.
+                '''
+                sshagent(credentials: ['AWS']) {
+                    sh '''
                     ssh -k ec2-107-21-89-82.compute-1.amazonaws.com 'docker stop `docker ps -q`'
                     ssh -k ec2-107-21-89-82.compute-1.amazonaws.com 'docker container prune -f'
                     ssh -k ec2-107-21-89-82.compute-1.amazonaws.com 'docker image prune -af'
